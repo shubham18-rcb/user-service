@@ -3,7 +3,7 @@ package com.icodian.careervia.user.dto;
 import lombok.Data;
 
 @Data
-public class UserCreateRequestDto {
+public class UserCreateRequestDTO {
 	
 	private String fullName;
 	

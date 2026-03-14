@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "UserProfile")
+@Table(name = "user_profile")
 public class UserProfile {
 	
 	@Id
@@ -25,6 +25,18 @@ public class UserProfile {
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	
+	@Column(name = "first_name")
+	private String firstName;
+	
+	@Column(name = "last_name")
+	private String lastName;
+	
+	@Column(name = "phone")
+	private String phone;
+	
+	@Column(name = "location")
+	private String location;
 	
 	@Column(name = "education")
 	private String education;

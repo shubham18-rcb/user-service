@@ -6,6 +6,7 @@ import java.util.List;
 import com.icodian.careervia.user.enums.Role;
 import com.icodian.careervia.user.enums.UserStatus;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,7 +22,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "User")
+@Table(name = "`User`")
 public class User {
 	
 	@Id
@@ -49,19 +50,19 @@ public class User {
 	@Column(name = "status", nullable = false)
 	private UserStatus status = UserStatus.ACTIVE;
 	
-	@Column(name = "created_at")
+	@Column(name = "created_at", updatable = false)
 	private Date createdAt;
 	
-	@OneToOne(mappedBy = "user")
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private UserProfile userProfile;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<UserSkill> userSkill; 
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<UserCourse> userCourse;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Resume> resume;
 	
 }

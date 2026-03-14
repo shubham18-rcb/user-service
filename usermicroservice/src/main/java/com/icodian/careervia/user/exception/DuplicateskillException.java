@@ -1,17 +1,17 @@
 package com.icodian.careervia.user.exception;
 
-public class DuplicateskillException extends RuntimeException{
+public class DuplicateSkillException extends RuntimeException{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public DuplicateskillException (String message) {
+	public DuplicateSkillException (String message) {
 		super(message);
 	}
 	
-	public DuplicateskillException() {
+	public DuplicateSkillException() {
 		super("This skill arleady exists. Try adding another one.");
 	}
 

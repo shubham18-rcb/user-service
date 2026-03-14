@@ -1,4 +1,4 @@
-package com.icodian.careervia.user.controller;
+																																																																																								package com.icodian.careervia.user.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.icodian.careervia.user.dto.LoginRequestDto;
-import com.icodian.careervia.user.dto.LoginResponseDto;
-import com.icodian.careervia.user.dto.UserCreateRequestDto;
-import com.icodian.careervia.user.dto.UserResponseDto;
-import com.icodian.careervia.user.dto.UserUpdateRequestDto;
+import com.icodian.careervia.user.dto.LoginRequestDTO;
+import com.icodian.careervia.user.dto.LoginResponseDTO;
+import com.icodian.careervia.user.dto.UserCreateRequestDTO;
+import com.icodian.careervia.user.dto.UserProfileDTO;
+import com.icodian.careervia.user.dto.UserProfileRequestDTO;
+import com.icodian.careervia.user.dto.UserResponseDTO;
+import com.icodian.careervia.user.dto.UserUpdateRequestDTO;
 import com.icodian.careervia.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,42 +29,55 @@ public class UserController {
 
 	private final UserService userService;
 
-	// CREATE USER
+	// THIS IS USED FOR CREATING A NEW USER
 	@PostMapping
-	public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateRequestDto request) {
+	public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserCreateRequestDTO request) {
 		return ResponseEntity.ok(userService.createUser(request));
 	}
 
-	// LOGIN
+	// THIS IS USED TO LOGIN THE USER
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
+	public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
 		return ResponseEntity.ok(userService.login(request));
 	}
 
-	// GET USER BY ID
+	// GET A USER BY USER's ID
 	@GetMapping("/{userId}")
-	public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
+	public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long userId) {
 		return ResponseEntity.ok(userService.getUserById(userId));
 	}
 
-	// GET USER BY EMAIL
+	// GET A USER BY USER's EMAIL
 	@GetMapping
-	public ResponseEntity<UserResponseDto> getUserByEmail(@RequestParam String email) {
+	public ResponseEntity<UserResponseDTO> getUserByEmail(@RequestParam String email) {
 		return ResponseEntity.ok(userService.getUserByEmail(email));
 	}
 
-	// UPDATE USER
+	// UPDATE THE USER INFO
 	@PutMapping("/{userId}")
-	public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId,
-			@RequestBody UserUpdateRequestDto request) {
+	public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long userId,
+			@RequestBody UserUpdateRequestDTO request) {
 		return ResponseEntity.ok(userService.updateUser(userId, request));
 	}
 
-	// DELETE USER
+	// DELETE THE ALREADY EXISTING USER
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+	public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
 		userService.deleteUser(userId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok("User deleted successfully");
+	}
+
+	// GET THE USER PROFILE
+	@GetMapping("/{userId}/profile")
+	public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable Long userId) {
+		return ResponseEntity.ok(userService.getUserProfile(userId));
+	}
+
+	// CREATE OR UPDATE USER PROFILE
+	@PutMapping("/{userId}/profile")
+	public ResponseEntity<UserProfileDTO> updateUserProfile(@PathVariable Long userId,
+			@RequestBody UserProfileRequestDTO request) {
+		return ResponseEntity.ok(userService.createOrUpdateProfile(userId, request));
 	}
 
 }

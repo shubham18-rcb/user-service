@@ -3,30 +3,31 @@ package com.icodian.careervia.user.service;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.icodian.careervia.user.dto.ApplicationDto;
-import com.icodian.careervia.user.dto.CourseDto;
-import com.icodian.careervia.user.dto.LoginRequestDto;
-import com.icodian.careervia.user.dto.LoginResponseDto;
-import com.icodian.careervia.user.dto.ResumeDto;
-import com.icodian.careervia.user.dto.ResumeRequestDto;
-import com.icodian.careervia.user.dto.SkillDto;
-import com.icodian.careervia.user.dto.UserCourseRequestDto;
-import com.icodian.careervia.user.dto.UserCreateRequestDto;
-import com.icodian.careervia.user.dto.UserProfileDto;
-import com.icodian.careervia.user.dto.UserProfileRequestDto;
-import com.icodian.careervia.user.dto.UserResponseDto;
-import com.icodian.careervia.user.dto.UserSkillRequestDto;
-import com.icodian.careervia.user.dto.UserUpdateRequestDto;
+import com.icodian.careervia.user.dto.ApplicationDTO;
+import com.icodian.careervia.user.dto.CourseDTO;
+import com.icodian.careervia.user.dto.LoginRequestDTO;
+import com.icodian.careervia.user.dto.LoginResponseDTO;
+import com.icodian.careervia.user.dto.ResumeDTO;
+import com.icodian.careervia.user.dto.ResumeRequestDTO;
+import com.icodian.careervia.user.dto.SkillDTO;
+import com.icodian.careervia.user.dto.UserCourseRequestDTO;
+import com.icodian.careervia.user.dto.UserCreateRequestDTO;
+import com.icodian.careervia.user.dto.UserProfileDTO;
+import com.icodian.careervia.user.dto.UserProfileRequestDTO;
+import com.icodian.careervia.user.dto.UserResponseDTO;
+import com.icodian.careervia.user.dto.UserSkillRequestDTO;
+import com.icodian.careervia.user.dto.UserUpdateRequestDTO;
 import com.icodian.careervia.user.entity.User;
+import com.icodian.careervia.user.entity.UserProfile;
 import com.icodian.careervia.user.enums.Role;
 import com.icodian.careervia.user.enums.UserStatus;
 import com.icodian.careervia.user.exception.InvalidCredentialsException;
 import com.icodian.careervia.user.exception.UserAlreadyExistException;
 import com.icodian.careervia.user.exception.UserNotFoundException;
+import com.icodian.careervia.user.repository.UserProfileRepository;
 import com.icodian.careervia.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,19 +35,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	
+
 	private final UserRepository userRepository;
-	//private final PasswordEncoder passwordEncoder;
+	// private final PasswordEncoder passwordEncoder;
 	private final RestTemplate restTemplate;
-	
-	//CREATE USER
+	private final UserProfileRepository userProfileRepository;
+
+	// CREATE USER
 	@Override
-	public UserResponseDto createUser(UserCreateRequestDto request) {
-		
-		if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+	public UserResponseDTO createUser(UserCreateRequestDTO request) {
+
+		if (userRepository.findByEmail(request.getEmail()).isPresent()) {
 			throw new UserAlreadyExistException("Email already registered");
 		}
-		
+
 		User user = new User();
 		user.setFullName(request.getFullName());
 		user.setEmail(request.getEmail());
@@ -54,85 +56,87 @@ public class UserServiceImpl implements UserService {
 		user.setRole(Role.JOB_SEEKER);
 		user.setStatus(UserStatus.ACTIVE);
 		user.setCreatedAt(new Date());
-		
+
 		user.setPassword(request.getPassword());
-		
+
 		User savedUser = userRepository.save(user);
-		
-		return mapToUserResponseDto(savedUser);
-		
+
+		// CREATE USER PROFILE
+		UserProfile profile = new UserProfile();
+		profile.setUser(savedUser);
+		profile.setUpdatedAt(new Date());
+
+		UserProfile savedProfile = userProfileRepository.save(profile);
+
+		return mapToUserResponseDTO(savedUser);
+
 	}
-	
-	//LOGIN
+
+	// LOGIN
 	@Override
-	public LoginResponseDto login(LoginRequestDto request) {
-		
+	public LoginResponseDTO login(LoginRequestDTO request) {
+
 		User user = userRepository.findByEmail(request.getEmail())
-				.orElseThrow(()-> new UserNotFoundException("Invalid Email"));
-		
-		if(!request.getPassword().equals(user.getPassword())) {
+				.orElseThrow(() -> new UserNotFoundException("Invalid Email"));
+
+		if (!request.getPassword().equals(user.getPassword())) {
 			throw new InvalidCredentialsException("Invalid Password");
 		}
-		
-		LoginResponseDto response = new LoginResponseDto();
+
+		LoginResponseDTO response = new LoginResponseDTO();
 		response.setUserId(user.getUserId());
 		response.setFullName(user.getFullName());
 		response.setEmail(user.getEmail());
 		response.setRole(Role.JOB_SEEKER);
 		response.setToken("JWT TOKEN PLACEHOLDER");
-		
+
 		return response;
 	}
-	
-	//GET USER BY ID
+
+	// GET USER BY ID
 	@Override
-	public UserResponseDto getUserById(Long userId) {
-		
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("User not found"));
-		
-		return mapToUserResponseDto(user);
+	public UserResponseDTO getUserById(Long userId) {
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+		return mapToUserResponseDTO(user);
 	}
-	
-	//GET USER BY EMAIL
+
+	// GET USER BY EMAIL
 	@Override
-	public UserResponseDto getUserByEmail(String email) {
-		
-		User user = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UserNotFoundException("User Not Found"));
-		
-		return mapToUserResponseDto(user);
+	public UserResponseDTO getUserByEmail(String email) {
+
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
+		return mapToUserResponseDTO(user);
 	}
-	
-	//UPDATE USER
+
+	// UPDATE USER
 	@Override
-	public UserResponseDto updateUser(Long userId, UserUpdateRequestDto request) {
-		
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("User Not Found"));
-		
+	public UserResponseDTO updateUser(Long userId, UserUpdateRequestDTO request) {
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
 		user.setFullName(request.getFullName());
 		user.setPhone(request.getPhone());
-		user.setStatus(UserStatus.valueOf(request.getStatus().toUpperCase()));
-		
+
 		User updatedUser = userRepository.save(user);
-		
-		return mapToUserResponseDto(updatedUser);
+
+		return mapToUserResponseDTO(updatedUser);
 	}
-	
-	//DELETE USER
+
+	// DELETE USER
 	@Override
 	public void deleteUser(Long userId) {
-		
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("User not found"));
-		
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+
 		userRepository.delete(user);
 	}
-	
-	private UserResponseDto mapToUserResponseDto(User user) {
-		
-		UserResponseDto dto = new UserResponseDto();
+
+	private UserResponseDTO mapToUserResponseDTO(User user) {
+
+		UserResponseDTO dto = new UserResponseDTO();
 		dto.setUserId(user.getUserId());
 		dto.setFullName(user.getFullName());
 		dto.setEmail(user.getEmail());
@@ -140,26 +144,99 @@ public class UserServiceImpl implements UserService {
 		dto.setRole(user.getRole());
 		dto.setStatus(user.getStatus());
 		dto.setCreatedAt(user.getCreatedAt());
-		
+
+		// FETCH USER PROFILE
+		UserProfile profile = userProfileRepository.findByUserUserId(user.getUserId()).orElse(null);
+
+		if (profile != null) {
+			UserProfileDTO profileDTO = new UserProfileDTO();
+			profileDTO.setProfileId(profile.getProfileId());
+			profileDTO.setBio(profile.getBio());
+			profileDTO.setEducation(profile.getEducation());
+			profileDTO.setExperience(profile.getExperience());
+			profileDTO.setProfileStrength(profile.getProfileStrength());
+			profileDTO.setUpdatedAt(profile.getUpdatedAt());
+
+			dto.setProfile(profileDTO);
+		}
+
 		return dto;
-		
-		
 	}
 
 	@Override
-	public UserProfileDto createOrUpdateProfile(Long userId, UserProfileRequestDto request) {
+	public UserProfileDTO createOrUpdateProfile(Long userId, UserProfileRequestDTO request) {
+
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+		UserProfile profile = userProfileRepository.findByUserUserId(userId)
+				.orElseGet(()-> {
+					UserProfile newProfile = new UserProfile();
+					newProfile.setUser(user);
+					return newProfile;
+				});
+
+		profile.setUser(user);
+		profile.setFirstName(request.getFirstName());
+		profile.setLastName(request.getLastName());
+		profile.setLocation(request.getLocation());
+		profile.setPhone(request.getPhone());
+		profile.setEducation(request.getEducation());
+		profile.setExperience(request.getExperience());
+		profile.setBio(request.getBio());
+		profile.setUpdatedAt(new Date());
+		
+		//Calculating the Profile Strength
+		int strength = 0;
+		
+		if(request.getBio() != null && !request.getBio().isEmpty()) {
+			strength += 33;
+		}
+		
+		if(request.getEducation() != null && !request.getEducation().isEmpty()) {
+			strength += 33;
+		}
+		
+		if(request.getExperience() != null && !request.getExperience().isEmpty()) {
+			strength += 34;
+		}
+		
+		profile.setProfileStrength(strength);
+
+		UserProfile savedProfile = userProfileRepository.save(profile);
+
+		UserProfileDTO dto = new UserProfileDTO();
+		dto.setProfileId(savedProfile.getProfileId());
+		dto.setEducation(savedProfile.getEducation());
+		dto.setExperience(savedProfile.getExperience());
+		dto.setBio(savedProfile.getBio());
+		dto.setProfileStrength(savedProfile.getProfileStrength());
+		dto.setUpdatedAt(savedProfile.getUpdatedAt());
+		return dto;
+	}
+
+	@Override
+	public UserProfileDTO getUserProfile(Long userId) {
+
+		UserProfile profile = userProfileRepository.findByUserUserId(userId)
+				.orElseThrow(() -> new UserNotFoundException("User profile not found "));
+
+		UserProfileDTO dto = new UserProfileDTO();
+		dto.setEducation(profile.getEducation());
+		dto.setExperience(profile.getExperience());
+		dto.setBio(profile.getBio());
+		dto.setProfileStrength(profile.getProfileStrength());
+
+		return dto;
+	}
+
+	@Override
+	public void addSkillToUser(Long userId, UserSkillRequestDTO request) {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
 	@Override
-	public void addSkillToUser(Long userId, UserSkillRequestDto request) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<SkillDto> getUserSkills(Long userId) {
+	public List<SkillDTO> getUserSkills(Long userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -167,35 +244,35 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void removeSkillFromUser(Long userId, Long skillId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void addCourseToUser(Long userId, UserCourseRequestDto request) {
+	public void addCourse(Long userId, UserCourseRequestDTO request) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public List<CourseDto> getUserCourses(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void removeCourseFromUser(Long userId, Long courseId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ResumeDto addResume(Long userId, ResumeRequestDto reuqest) {
+	public List<CourseDTO> getCourses(Long userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ResumeDto updateResume(Long userId, Long resumeId, ResumeRequestDto request) {
+	public void removeCourse(Long userId, Long courseId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public ResumeDTO addResume(Long userId, ResumeRequestDTO request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResumeDTO updateResume(Long userId, Long resumeId, ResumeRequestDTO request) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -203,14 +280,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleteResume(Long userId, Long resumeId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public List<ApplicationDto> getUserApplication(Long userId) {
+	public List<ApplicationDTO> getUserApplications(Long userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 }

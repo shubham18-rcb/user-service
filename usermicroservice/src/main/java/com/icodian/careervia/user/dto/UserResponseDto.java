@@ -9,7 +9,7 @@ import com.icodian.careervia.user.enums.UserStatus;
 import lombok.Data;
 
 @Data
-public class UserResponseDto {
+public class UserResponseDTO {
 	
 	private Long userId;
 	private String fullName;
@@ -19,9 +19,9 @@ public class UserResponseDto {
 	private UserStatus status;
 	private Date createdAt;
 	
-	private UserProfileDto profile;
-	private List<SkillDto> skills;
-	private List<CourseDto> courses;
-	private List<ResumeDto> resumes;
+	private UserProfileDTO profile;
+	private List<SkillDTO> skills;
+	private List<CourseDTO> courses;
+	private List<ResumeDTO> resumes;
 
 }

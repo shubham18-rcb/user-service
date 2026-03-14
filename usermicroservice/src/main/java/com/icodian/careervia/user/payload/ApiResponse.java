@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ApiResponse {
+public class APIResponse {
 
 	private String message;
 	private boolean success;

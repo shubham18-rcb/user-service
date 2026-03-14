@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class UserProfileDto {
+public class UserProfileDTO {
 	
 	private Long profileId;
 	private String bio;

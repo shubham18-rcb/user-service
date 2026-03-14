@@ -13,7 +13,7 @@ public class UsermicroserviceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UsermicroserviceApplication.class, args);
-		log.info("Working Successfully!!");
+		log.info("User Service is running at port no. 8082");
 	}
 
 }

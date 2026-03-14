@@ -5,7 +5,7 @@ import com.icodian.careervia.user.enums.Role;
 import lombok.Data;
 
 @Data
-public class LoginResponseDto {
+public class LoginResponseDTO {
 	
 	private Long userId;
 	private String fullName;
