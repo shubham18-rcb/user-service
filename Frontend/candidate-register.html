@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate Registration - CareerVia</title>
+    <link rel="stylesheet" href="register.css" />
+  </head>
+
+  <body>
+    <div class="register-container">
+      <div class="register-header">
+        <img
+          src="C:\Users\sshub\OneDrive\Documents\CareerVia\Frontend\images\logo.png"
+          class="logo"
+        />
+
+        <h2>Create Your Candidate Account</h2>
+        <p>Start Your Career Journey Today</p>
+      </div>
+
+      <form class="register-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" />
+          </div>
+
+          <div>
+            <div class="form-group">
+              <label>Confirm Password</label>
+              <input type="password" />
+            </div>
+          </div>
+
+          <div class="form-now">
+            <div class="form-group">
+              <label>Current Location</label>
+              <input type="text" />
+            </div>
+
+            <div class="form-group">
+              <label>Experience Level</label>
+
+              <select>
+                <option>Fresher</option>
+                <option>0-2 Years</option>
+                <option>2-5 Years</option>
+                <option>5+ Years</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Primary Skills</label>
+              <input type="text" placeholder="Java, Spring Boot, React" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full">
+              <label>Upload Resume</label>
+              <input type="file" />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="create-btn">Create Account</button>
+            <p>
+              Already have an account?
+              <a href="login.html">Sign In</a>
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
