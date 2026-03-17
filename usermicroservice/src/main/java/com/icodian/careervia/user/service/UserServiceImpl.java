@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
 		// CREATE USER PROFILE
 		UserProfile profile = new UserProfile();
 		profile.setUser(savedUser);
+		profile.setEmail(savedUser.getEmail());
 		profile.setUpdatedAt(new Date());
 
 		UserProfile savedProfile = userProfileRepository.save(profile);
@@ -151,6 +152,7 @@ public class UserServiceImpl implements UserService {
 		if (profile != null) {
 			UserProfileDTO profileDTO = new UserProfileDTO();
 			profileDTO.setProfileId(profile.getProfileId());
+			profileDTO.setEmail(profile.getEmail());
 			profileDTO.setBio(profile.getBio());
 			profileDTO.setEducation(profile.getEducation());
 			profileDTO.setExperience(profile.getExperience());
@@ -168,44 +170,45 @@ public class UserServiceImpl implements UserService {
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-		UserProfile profile = userProfileRepository.findByUserUserId(userId)
-				.orElseGet(()-> {
-					UserProfile newProfile = new UserProfile();
-					newProfile.setUser(user);
-					return newProfile;
-				});
+		UserProfile profile = userProfileRepository.findByUserUserId(userId).orElseGet(() -> {
+			UserProfile newProfile = new UserProfile();
+			newProfile.setUser(user);
+			return newProfile;
+		});
 
 		profile.setUser(user);
 		profile.setFirstName(request.getFirstName());
 		profile.setLastName(request.getLastName());
+		profile.setEmail(request.getEmail());
 		profile.setLocation(request.getLocation());
 		profile.setPhone(request.getPhone());
 		profile.setEducation(request.getEducation());
 		profile.setExperience(request.getExperience());
 		profile.setBio(request.getBio());
 		profile.setUpdatedAt(new Date());
-		
-		//Calculating the Profile Strength
+
+		// Calculating the Profile Strength
 		int strength = 0;
-		
-		if(request.getBio() != null && !request.getBio().isEmpty()) {
+
+		if (request.getBio() != null && !request.getBio().isEmpty()) {
 			strength += 33;
 		}
-		
-		if(request.getEducation() != null && !request.getEducation().isEmpty()) {
+
+		if (request.getEducation() != null && !request.getEducation().isEmpty()) {
 			strength += 33;
 		}
-		
-		if(request.getExperience() != null && !request.getExperience().isEmpty()) {
+
+		if (request.getExperience() != null && !request.getExperience().isEmpty()) {
 			strength += 34;
 		}
-		
+
 		profile.setProfileStrength(strength);
 
 		UserProfile savedProfile = userProfileRepository.save(profile);
 
 		UserProfileDTO dto = new UserProfileDTO();
 		dto.setProfileId(savedProfile.getProfileId());
+		dto.setEmail(savedProfile.getEmail());
 		dto.setEducation(savedProfile.getEducation());
 		dto.setExperience(savedProfile.getExperience());
 		dto.setBio(savedProfile.getBio());
@@ -221,10 +224,14 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new UserNotFoundException("User profile not found "));
 
 		UserProfileDTO dto = new UserProfileDTO();
+		
+		dto.setProfileId(profile.getProfileId());
+		dto.setEmail(profile.getEmail());
 		dto.setEducation(profile.getEducation());
 		dto.setExperience(profile.getExperience());
 		dto.setBio(profile.getBio());
 		dto.setProfileStrength(profile.getProfileStrength());
+		dto.setUpdatedAt(profile.getUpdatedAt());
 
 		return dto;
 	}

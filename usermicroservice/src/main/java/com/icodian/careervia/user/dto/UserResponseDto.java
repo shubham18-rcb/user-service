@@ -22,6 +22,6 @@ public class UserResponseDTO {
 	private UserProfileDTO profile;
 	private List<SkillDTO> skills;
 	private List<CourseDTO> courses;
-	private List<ResumeDTO> resumes;
+	private List<ResumeDTO> resume;
 
 }
