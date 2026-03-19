@@ -8,7 +8,8 @@ import lombok.Data;
 public class UserProfileDTO {
 	
 	private Long profileId;
-	private String email;
+	private String firstName;
+	private String lastName;
 	private String bio;
 	private String experience;
 	private String education;

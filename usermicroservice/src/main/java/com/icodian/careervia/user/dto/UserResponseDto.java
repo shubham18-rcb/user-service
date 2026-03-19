@@ -12,7 +12,8 @@ import lombok.Data;
 public class UserResponseDTO {
 	
 	private Long userId;
-	private String fullName;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private String phone;
 	private Role role;

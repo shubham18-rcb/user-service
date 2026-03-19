@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
 		}
 
 		User user = new User();
-		user.setFullName(request.getFullName());
 		user.setEmail(request.getEmail());
 		user.setPhone(request.getPhone());
 		user.setRole(Role.JOB_SEEKER);
@@ -64,7 +63,6 @@ public class UserServiceImpl implements UserService {
 		// CREATE USER PROFILE
 		UserProfile profile = new UserProfile();
 		profile.setUser(savedUser);
-		profile.setEmail(savedUser.getEmail());
 		profile.setUpdatedAt(new Date());
 
 		UserProfile savedProfile = userProfileRepository.save(profile);
@@ -86,7 +84,6 @@ public class UserServiceImpl implements UserService {
 
 		LoginResponseDTO response = new LoginResponseDTO();
 		response.setUserId(user.getUserId());
-		response.setFullName(user.getFullName());
 		response.setEmail(user.getEmail());
 		response.setRole(Role.JOB_SEEKER);
 		response.setToken("JWT TOKEN PLACEHOLDER");
@@ -118,7 +115,6 @@ public class UserServiceImpl implements UserService {
 
 		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User Not Found"));
 
-		user.setFullName(request.getFullName());
 		user.setPhone(request.getPhone());
 
 		User updatedUser = userRepository.save(user);
@@ -139,7 +135,6 @@ public class UserServiceImpl implements UserService {
 
 		UserResponseDTO dto = new UserResponseDTO();
 		dto.setUserId(user.getUserId());
-		dto.setFullName(user.getFullName());
 		dto.setEmail(user.getEmail());
 		dto.setPhone(user.getPhone());
 		dto.setRole(user.getRole());
@@ -152,7 +147,6 @@ public class UserServiceImpl implements UserService {
 		if (profile != null) {
 			UserProfileDTO profileDTO = new UserProfileDTO();
 			profileDTO.setProfileId(profile.getProfileId());
-			profileDTO.setEmail(profile.getEmail());
 			profileDTO.setBio(profile.getBio());
 			profileDTO.setEducation(profile.getEducation());
 			profileDTO.setExperience(profile.getExperience());
@@ -179,9 +173,7 @@ public class UserServiceImpl implements UserService {
 		profile.setUser(user);
 		profile.setFirstName(request.getFirstName());
 		profile.setLastName(request.getLastName());
-		profile.setEmail(request.getEmail());
 		profile.setLocation(request.getLocation());
-		profile.setPhone(request.getPhone());
 		profile.setEducation(request.getEducation());
 		profile.setExperience(request.getExperience());
 		profile.setBio(request.getBio());
@@ -208,7 +200,8 @@ public class UserServiceImpl implements UserService {
 
 		UserProfileDTO dto = new UserProfileDTO();
 		dto.setProfileId(savedProfile.getProfileId());
-		dto.setEmail(savedProfile.getEmail());
+		dto.setFirstName(savedProfile.getFirstName());
+		dto.setLastName(savedProfile.getLastName());
 		dto.setEducation(savedProfile.getEducation());
 		dto.setExperience(savedProfile.getExperience());
 		dto.setBio(savedProfile.getBio());
@@ -224,9 +217,10 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new UserNotFoundException("User profile not found "));
 
 		UserProfileDTO dto = new UserProfileDTO();
-		
+
 		dto.setProfileId(profile.getProfileId());
-		dto.setEmail(profile.getEmail());
+		dto.setFirstName(profile.getFirstName());
+		dto.setLastName(profile.getLastName());
 		dto.setEducation(profile.getEducation());
 		dto.setExperience(profile.getExperience());
 		dto.setBio(profile.getBio());

@@ -30,9 +30,6 @@ public class User {
 	@Column(name = "user_id", updatable = false, nullable = false)
 	private Long userId;
 	
-	@Column(name = "full_name")
-	private String fullName;
-	
 	@Column(name = "email", unique = true)
 	private String email;
 	

@@ -32,12 +32,6 @@ public class UserProfile {
 	@Column(name = "last_name")
 	private String lastName;
 	
-	@Column(unique=true, nullable=false)
-	private String email;
-	
-	@Column(name = "phone")
-	private String phone;
-	
 	@Column(name = "location")
 	private String location;
 	
